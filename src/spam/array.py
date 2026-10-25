@@ -118,14 +118,6 @@ class EqArrayPair:
         self.self=self
         self.evt=evt
         self.array=array
-        #if
-
-class DepthVolume:
-    "holds the pairs that goes through our point of interest"
-    def __init__(self,pt,depthrange,radius):
-        self.pt=pt
-        self.radius=radius
-        
         
 class Array:
     def __init__(self,pt,radius, station_distances, basestation=None):
@@ -137,6 +129,20 @@ class Array:
         self.sta_array_list=[]
         self.basestation=basestation
         self.station_distances=station_distances
+        @classmethod
+        def from_json(cls, jsonObj):
+            pt = Point.from_json(jsonObj["pt"])
+            station_distances=Station.from_json(jsonObj['station_distances'])
+            basestation=Station.from_json(jsonObj['basestation'])
+            array = Array(pt, jsonObj["radius"], station_distances,basestation)
+        def to_json(self):
+            return {
+                    "pt": self.pt.to_json(),
+                    "radius": self.radius,
+                    "sta_array_list":self.sta_array_list,
+                    "eqcount":self.eqcount,
+                    "basestation":self.basestation
+                    }
 
 def form_array(sta_list,pt,radius):
     sta_array_list=[]

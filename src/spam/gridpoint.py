@@ -30,6 +30,22 @@ class Gridpoint:
         lat,lon=cart_latlon(com.x,com.y,com.z)
         self.loc=Location(lat,lon,cart)
         self.phaseCount = {}
+    @classmethod
+    def to_json(self):
+        return {
+            "lat": self.loc.lat,
+            "lon": self.loc.lon,
+            "x": self.loc.cart.x,
+            "y": self.loc.cart.y,
+            "z": self.loc.cart.z
+        }
+    def from_json(cls, jsonObj):
+        cart = (jsonObj["x"], jsonObj["y"], jsonObj["z"])
+        return cls(cart)
+        
+    def from_json(cls, jsonObj):
+        cart = (jsonObj["x"], jsonObj["y"], jsonObj["z"])
+        return cls(cart)
     def distToSta(self, sta):
         return self.loc.distTo(sta.loc)
     def __str__(self):
@@ -43,6 +59,25 @@ class Station:
         self.loc=loc
         self.start=start
         self.stop=stop
+    def to_json(self):
+        return {
+            "name":self.name,
+            "netwrk":self.netwrk,
+            "loc":{
+                "lat":self.loc.lat,
+                "lon":self.loc.lon
+                },
+            "start":self.start,
+            "stop":self.stop
+                }
+    @classmethod
+    def from_json(cls,jsonObj):
+        netwrk=jsonObj['netwrk']
+        name=jsonObj['name']
+        loc=Location(jsonObj["loc"]["lat"],lon=jsonObj["loc"]["lon"])
+        start=jsonObj['start']
+        stop=jsonObj['stop']
+        return cls(netwrk,name,loc,start,stop)
     def __str__(self):
         return f"{self.netwrk}_{self.name} {self.loc}"
 
@@ -52,6 +87,21 @@ class EQ:
         self.loc=loc
         self.depth=depth
         self.time=event_time
+    def to_json(self):
+        return {
+            "loc":{
+                "lat":self.loc.lat,
+                "lon":self.loc.lon
+                },
+            "time":self.time,
+            "depth":self.depth
+            }
+    @classmethod
+    def from_json(cls,jsonObj):
+        depth=jsonObj['depth']
+        event_time=jsonObj['time']
+        loc=Location(jsonObj["loc"]["lat"],lon=jsonObj["loc"]["lon"])
+        return cls(loc,depth,event_time)
     def __str__(self):
         return f"{self.time} {self.loc}"
 
@@ -61,3 +111,13 @@ class MetaData:
         "Data has a version and a date it was created on"
         self.version=version
         self.datecreated=datecreated
+    def to_json(self):
+        return {
+            "creation":self.datecreated,
+            "version":self.version,
+        }
+    @classmethod
+    def from_json(cls,jsonObj):
+        version=jsonObj['version']
+        datecreated=jsonObj['datecreated']
+        return cls(version,datecreated)
