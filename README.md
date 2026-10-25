@@ -69,4 +69,5 @@ Please email me with any questions: amuhly@email.sc.edu
 -----------------------
 ## Version Information
 version 0.0.1Beta - original version that is not compatible with Ubuntu 26.04 LT
+
 version 0.0.2Beta - updated version compatible with Ubuntu 26.04 LT buy using @classmethod to create   json readable objects and dictionaries
