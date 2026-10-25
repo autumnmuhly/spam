@@ -76,7 +76,7 @@ def parseArgs():
 
 def run_calc(args):
 
-    version = 'version 0.0.1Beta'
+    version = 'version 0.0.2Beta'
     radius_point_deg=radius_per_gridpoint(args.grid)
     print(f'array radius, {args.arrayradius} and gridpoint spacing, {radius_point_deg}')
     if args.arrayradius < radius_point_deg:

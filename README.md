@@ -1,17 +1,26 @@
-Heatmap creates heat maps for where on earth is the best place to go 'hunting' for seismic phases. In addition, it can act as an array former. 
+# Seismic Phase Array Match Maker 
 
-Check for dependencies and create environment
-- conda create -n spam
-- conda activate spam
-- conda install pip (?)
-- pip install -v -e .
+SPAM creates heat maps for where on earth is the best place to go 'hunting' for seismic phases. In addition, it can act as an array former. 
+
+## Check for dependencies and create environment
+```
+conda create -n spam
+conda activate spam
+conda install pip (?)
+pip install -v -e .
+```
+
 
 test example:
-- cd example
-- heatmapcalc -s All.stations -e 201511260545.event
-to run:  
+```
+cd example
+heatmapcalc -s All.stations -e 201511260545.event
+```
 
-heatmapcalc -s stationfilename -e eqcatalogfilename --minsta 1 --mineq 1 --phase S  
+to run:
+```
+heatmapcalc -s stationfilename -e eqcatalogfilename --minsta 1 --mineq 1 --phase S
+```
 
 required inputs:  
 '-p', '--phases', phase(s) of interest  
@@ -36,7 +45,7 @@ Event List:
 If you don't have an event list an example for creating one is given in prep_script 
 
 -----------------------
-Array Information
+## Array Information
 
 to prepare files for array processing:  
 
@@ -56,3 +65,8 @@ We are curently working on a pierce point finder. Ideally you will specify the p
 
 Happy Heatmapping!:)
 Please email me with any questions: amuhly@email.sc.edu 
+
+-----------------------
+## Version Information
+version 0.0.1Beta - original version that is not compatible with Ubuntu 26.04 LT
+version 0.0.2Beta - updated version compatible with Ubuntu 26.04 LT buy using @classmethod to create   json readable objects and dictionaries
