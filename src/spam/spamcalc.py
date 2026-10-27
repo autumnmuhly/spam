@@ -7,7 +7,7 @@ from datetime import datetime
 from .mesh_create import find_neighbors,fibonacci_sphere,create_gridpoint
 from .mesh_setup import latlon_cartesian,cart_latlon, radius_per_gridpoint
 from .gridpoint import Gridpoint,Station,EQ,Location,MetaData
-from .array import Array,form_all_array,ArrayToEqlist,EqtoArrayList,EqGridAssignment,form_eq,group_items_by_dist,items_in_dist,is_array_gp_okay,calcBasestation
+from .array import Array,form_all_array,ArrayToEqlist,EqtoArrayList,EqGridAssignment,form_eq,items_in_dist,is_array_gp_okay,calcBasestation
 from .distaz import DistAz
 from .read_datafiles import (
     read_stations_adept, read_earthquakes_adept,
@@ -17,6 +17,7 @@ from .taup import (
    phase_dist_range, taup_time, taup_phase
    )
 from .arrConfig import calcArthCenter
+import json
 
 def calc_one_array(phaseToDist, eq_list, min_station, min_eq_needed, arr ):
     arrToEQ = ArrayToEqlist(arr)
@@ -126,6 +127,7 @@ def run_calc(args):
                 file1.writelines(text)
 
     creationDate=datetime.now()
+    creationDate=creationDate.isoformat()
     metaData=MetaData(version,creationDate)
     
     #for arr in good_arrays:
@@ -135,28 +137,46 @@ def run_calc(args):
 
     os.system("awk -F, '!seen[$1>$2 ? $1 FS $2 : $2 FS $1]++' eq_list | awk  '{print $0}' > temp_sta")
     os.system("mv -f temp_sta eq_list")
+    # mydata={
+    #     "array_list":array_list,
+    #     "grid_array": grid_array,
+    #     "good_arrays": good_arrays,
+    #     "phase": args.phases,
+    #     "dist": phase_dist_range(args.phases,model='prem'),
+    #     "arrayradius": args.arrayradius,
+    #     "min_sta_per_array": args.minsta,
+    #     "min_eq_at_array": args.mineq,
+    #     "eq_list": eq_list,
+    #     "station_list": station_list,
+    #     "radius_point_deg": args.arrayradius,
+    #     "radius_of_earth": 6371,
+    #     "num_pts": args.grid,
+    #     "meta_data":metaData
+    # }
+        
+        
+    # with open(args.outfile, "w") as outf:
+    #     outf.write(jsonpickle.encode(mydata))
+    # return 0
     mydata={
-        "array_list":array_list,
-        "grid_array": grid_array,
-        "good_arrays": good_arrays,
-        "phase": args.phases,
-        "dist": phase_dist_range(args.phases,model='prem'),
-        "arrayradius": args.arrayradius,
-        "min_sta_per_array": args.minsta,
-        "min_eq_at_array": args.mineq,
-        "eq_list": eq_list,
-        "station_list": station_list,
-        "radius_point_deg": args.arrayradius,
-        "radius_of_earth": 6371,
-        "num_pts": args.grid,
-        "meta_data":metaData
-    }
-        
-        
+        "array_list":[arr.to_json() for arr in array_list],
+        "grid_array":[pt.to_json() for pt in grid_array],
+        "good_arrays":[arr.to_json() for arr in good_arrays],
+        "phase":args.phases,
+        "dist":phase_dist_range(args.phases, model="prem"),
+        "arrayradius":args.arrayradius,
+        "min_sta_per_array":args.minsta,
+        "min_eq_at_array":args.mineq,
+        "eq_list":[eq.to_json() for eq in eq_list],
+        "station_list":[sta.to_json() for sta in station_list],
+        "radius_point_deg":args.arrayradius,
+        "radius_of_earth":6371,
+        "num_pts":args.grid,
+        "meta_data":metaData.to_json()
+        }
     with open(args.outfile, "w") as outf:
-        outf.write(jsonpickle.encode(mydata))
+        json.dump(mydata, outf, indent=4)
     return 0
-
 
 
 def main():

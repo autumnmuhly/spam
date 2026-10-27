@@ -15,7 +15,7 @@ def read_stations_adept(filepath):
             items = line.split()
             net = items[0]
             sta = items[1]
-            loc = items[2]
+            locCode = items[2]
             lat = float(items[3])
             lon = float(items[4])
             loc = Location(lat, lon)

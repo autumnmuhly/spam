@@ -5,6 +5,7 @@ import os
 from .mesh_setup import latlon_cartesian,cart_latlon
 from .distaz import DistAz
 from .arrConfig import calcArthCenter
+from .gridpoint import Gridpoint,Station,EQ
 
 def is_ok_eq_sta(evt,sta,distRange):
     "Takes in an eq and checks if sta/pt is existed at time of event and if the stations are within range"
@@ -52,7 +53,6 @@ class EqtoArrayList:
     def __init__(self,evt):
         self.evt=evt 
         self.array_list=[]
-
     def check_array(self,arr,distRange,minSta):
         "checks if any arrays are within range from earthquake, if so add array to the array list"
         min=distRange[0]
@@ -81,7 +81,21 @@ class ArrayToEqlist:
         self.eqlists=[]
         self.eqcount=len(self.eqlists)
         self.good_sta_list=[]
-        self.piercepoints={}
+    def to_json(self):
+        return {
+            "array":self.array.to_json(),
+            "eqlists":[eq.to_json() for eq in self.eqlists],
+            "eqcount":self.eqcount,
+            "good_sta_list":[sta.to_json() for sta in self.good_sta_list]
+            }
+    @classmethod
+    def from_json(cls,jsonObj):
+        array=Array.from_json(jsonObj["array"])
+        obj=cls(array)
+        obj.eqcount=jsonObj["eqcount"]
+        obj.eqlists=[EQ.from_json(eq) for eq in jsonObj["eqlists"]]
+        obj.good_sta_list=[Station.from_json(sta) for sta in jsonObj["good_sta_list"]]
+        return obj
     def check_eq(self,evt,distRange,minSta):
         "checks if any events are within range from array, if so count 1 for that array and add event to eqlist"
         min=distRange[0]
@@ -97,9 +111,6 @@ class ArrayToEqlist:
             for sta in self.array.sta_list:
                 print(sta)
             for sta in self.array.sta_list:
-                #print(f'we are looking at {sta.name}')
-                print('printing a is_ok_eq function')
-                print(is_ok_eq_sta(evt,sta,distRange))
                 if is_ok_eq_sta(evt,sta,distRange) == True:
                     #print(f'this {sta.name} made it ')
                     #print('checking if sta in array and evt are in right distance and start time')
@@ -112,13 +123,6 @@ class ArrayToEqlist:
                         counted_eq = True
         return True
 
-class EqArrayPair:
-    "throws away stations that are not okay for that eq"
-    def __init__(self,evt,array):
-        self.self=self
-        self.evt=evt
-        self.array=array
-        
 class Array:
     def __init__(self,pt,radius, station_distances, basestation=None):
         "an array has a grid point, a radius, a list of stations in it, and a base station"
@@ -129,27 +133,36 @@ class Array:
         self.sta_array_list=[]
         self.basestation=basestation
         self.station_distances=station_distances
-        @classmethod
-        def from_json(cls, jsonObj):
-            pt = Point.from_json(jsonObj["pt"])
-            station_distances=Station.from_json(jsonObj['station_distances'])
-            basestation=Station.from_json(jsonObj['basestation'])
-            array = Array(pt, jsonObj["radius"], station_distances,basestation)
-        def to_json(self):
-            return {
-                    "pt": self.pt.to_json(),
-                    "radius": self.radius,
-                    "sta_array_list":self.sta_array_list,
-                    "eqcount":self.eqcount,
-                    "basestation":self.basestation
+    def to_json(self):
+        return {
+                "pt": self.pt.to_json(),
+                "radius": self.radius,
+                "sta_array_list":[sta.to_json() for sta in self.sta_array_list],
+                "eqcount":self.eqcount,
+                "basestation":(self.basestation.to_json() if self.basestation else None),
+                "station_distances":[
+                    {
+                        "station":sta.to_json(),
+                        "distance":dist
                     }
+                    for sta,dist in self.station_distances.items()
+                ]
+                }
+    @classmethod
+    def from_json(cls, jsonObj):
+        pt = Gridpoint.from_json(jsonObj["pt"])
+        station_distances={Station.from_json(item["station"]): item["distance"] for item in jsonObj["station_distances"]}
+        basesta_name=jsonObj.get('basestation')
+        basestation=(Station.from_json(basesta_name) if basesta_name else None)
+        array = cls(pt, jsonObj["radius"], station_distances,basestation)
+        array.eqcount=jsonObj.get("eqcount",0)
+        array.sta_array_list=[Station.from_json(sta) for sta in jsonObj.get("sta_array_list",[])]
+        return array
 
 def form_array(sta_list,pt,radius):
     sta_array_list=[]
-    sta_distance=[]
     sta_dist = {}
     min_dist=361
-    central_sta=None
     for sta in sta_list:
         dist=DistAz(pt.loc.lat,pt.loc.lon,sta.loc.lat,sta.loc.lon)
         pt_sta=abs(dist.delta)
@@ -157,7 +170,6 @@ def form_array(sta_list,pt,radius):
             sta_array_list.append(sta)
             sta_dist[sta] = pt_sta
             if pt_sta<min_dist:
-                central_sta=sta
                 min_dist=pt_sta
     return Array(pt,radius,sta_dist)
 
@@ -210,31 +222,3 @@ def items_in_dist(locList,point,minRadius,maxRadius):
             good_locs.append(locItem)
     return good_locs
 
-class DistGrouping:
-    "Has a "
-    def __init__(self, itemList, center_point ):
-        self.itemList=itemList
-        self.centerpoint=center_point
-
-def group_items_by_dist(loc_list, point_list, minRadius, maxRadius, minSuccessful):
-    """
-    loc_list- list of things that have a location 
-    point_list- list of grid points
-    minRadius/maxRadius- min/max radius that the distance betweent the loc and point must satisfy 
-    minSuccessful-can be 0, how many of them in that range to be considered good
-    Return a touple where the 0th index is the point and the foundlist are the pairs for that point
-    """
-    good_lists = []
-    for point in point_list:
-        found_list = items_in_dist(loc_list, point, minRadius, maxRadius)
-        if (len(found_list) >= minSuccessful) & (len(found_list) != 0):
-            #good_lists.append(DistGrouping(found_list, point) )
-            good_lists.append( (point, found_list) )
-    return good_lists
-
-class PiercePoint:
-    def __init__(self,time,lat,lon,depth):
-        self.time=time
-        self.lat=lat
-        self.lon=lon
-        self.depth=depth

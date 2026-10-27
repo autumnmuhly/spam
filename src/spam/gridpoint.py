@@ -30,19 +30,15 @@ class Gridpoint:
         lat,lon=cart_latlon(com.x,com.y,com.z)
         self.loc=Location(lat,lon,cart)
         self.phaseCount = {}
-    @classmethod
     def to_json(self):
         return {
             "lat": self.loc.lat,
             "lon": self.loc.lon,
-            "x": self.loc.cart.x,
-            "y": self.loc.cart.y,
-            "z": self.loc.cart.z
+            "x": self.loc.cart[0],
+            "y": self.loc.cart[1],
+            "z": self.loc.cart[2]
         }
-    def from_json(cls, jsonObj):
-        cart = (jsonObj["x"], jsonObj["y"], jsonObj["z"])
-        return cls(cart)
-        
+    @classmethod
     def from_json(cls, jsonObj):
         cart = (jsonObj["x"], jsonObj["y"], jsonObj["z"])
         return cls(cart)
@@ -52,32 +48,35 @@ class Gridpoint:
         return f"gp {self.loc}"
 
 class Station:
-    def __init__(self,netwrk,name,loc,start,stop):
+    def __init__(self,netwrk,name,loc,start,stop,locCode):
         "station takes a location, start time, and end time"
         self.name=name
         self.netwrk=netwrk
         self.loc=loc
         self.start=start
         self.stop=stop
+        self.locCode=locCode
     def to_json(self):
         return {
             "name":self.name,
+            "locCode":self.locCode,
             "netwrk":self.netwrk,
             "loc":{
                 "lat":self.loc.lat,
                 "lon":self.loc.lon
                 },
-            "start":self.start,
-            "stop":self.stop
+            "start":self.start.isoformat(),
+            "stop":self.stop.isoformat()
                 }
     @classmethod
     def from_json(cls,jsonObj):
+        locCode=jsonObj['locCode']
         netwrk=jsonObj['netwrk']
         name=jsonObj['name']
         loc=Location(jsonObj["loc"]["lat"],lon=jsonObj["loc"]["lon"])
         start=jsonObj['start']
         stop=jsonObj['stop']
-        return cls(netwrk,name,loc,start,stop)
+        return cls(netwrk,name,loc,start,stop,locCode)
     def __str__(self):
         return f"{self.netwrk}_{self.name} {self.loc}"
 
@@ -93,7 +92,7 @@ class EQ:
                 "lat":self.loc.lat,
                 "lon":self.loc.lon
                 },
-            "time":self.time,
+            "time":self.time.isoformat(),
             "depth":self.depth
             }
     @classmethod
@@ -113,7 +112,7 @@ class MetaData:
         self.datecreated=datecreated
     def to_json(self):
         return {
-            "creation":self.datecreated,
+            "datecreated":self.datecreated,
             "version":self.version,
         }
     @classmethod
