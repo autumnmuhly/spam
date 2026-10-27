@@ -25,7 +25,7 @@ def read_stations_adept(filepath):
             lastdate=items[8]
             if lastdate != "None":
                 lastdate = datetime.fromisoformat(items[8])
-            sta = Station(net,sta,loc,firstdate,lastdate)
+            sta = Station(net,sta,loc,firstdate,lastdate,locCode)
             sta_list.append(sta)
     return sta_list
 

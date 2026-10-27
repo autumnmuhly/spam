@@ -101,22 +101,14 @@ class ArrayToEqlist:
         min=distRange[0]
         max=distRange[1]
         dist=DistAz(self.array.pt.loc.lat,self.array.pt.loc.lon,evt.loc.lat,evt.loc.lon)
-        print('this is the distance from array grid point to event')
-        print(dist.delta)
         distance=abs(dist.delta)
         if distance>min and distance<max:
             self.truth_count=0
             counted_eq = False
-            print('about to print array station list')
-            for sta in self.array.sta_list:
-                print(sta)
             for sta in self.array.sta_list:
                 if is_ok_eq_sta(evt,sta,distRange) == True:
-                    #print(f'this {sta.name} made it ')
-                    #print('checking if sta in array and evt are in right distance and start time')
                     self.good_sta_list.append(sta)
                     self.truth_count+=1
-                    print(self.truth_count)
                     if self.truth_count >= minSta and not counted_eq:
                         self.eqcount +=1 #is now adding one to the grid point if all stations meet the criteria
                         self.eqlists.append(evt)

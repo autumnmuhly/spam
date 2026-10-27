@@ -4,22 +4,24 @@ import argparse
 import os
 import datetime
 import sys
-import jsonpickle
+import json
 from types import SimpleNamespace
+from spam import ArrayToEqlist,Gridpoint,EQ
 
 def summary(args):
-    infilename = args.spamfile
+    infilename = "spam.json"
     with open(infilename, "r") as inf:
-        mydata = jsonpickle.decode(inf.read())
-    mydata = SimpleNamespace(mydata)
-
+        mydata=json.load(inf)
+    good_arrays=[ArrayToEqlist.from_json(arr) for arr in mydata['good_arrays']]
+    grid_array=[Gridpoint.from_json(pt) for pt in mydata['grid_array']]
+    eq_list=[EQ.from_json(eq) for eq in mydata['eq_list']]
     print(f"Array radius: {mydata.arrayradius}")
     print(f"Grid spacing: {mydata.radius_point_deg}")
-    print(f"Num grid points: {len(mydata.grid_array)}")
-    print(f"Num Earthquakes: {len(mydata.eq_list)}")
-    print(f"Good Arrays: {len(mydata.good_arrays)}")
+    print(f"Num grid points: {len(grid_array)}")
+    print(f"Num Earthquakes: {len(eq_list)}")
+    print(f"Good Arrays: {len(good_arrays)}")
     if args.arrays:
-        for arr_eq in mydata.good_arrays:
+        for arr_eq in good_arrays:
             arr = arr_eq.array
             print(f"  {arr.pt.loc.lat:0.2f}/{arr.pt.loc.lon:0.2f} {arr.basestation.netwrk}_{arr.basestation.name} {len(arr.sta_list)} stations, {len(arr_eq.eqlists)} earthquakes")
 
