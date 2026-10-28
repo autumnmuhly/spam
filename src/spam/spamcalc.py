@@ -36,8 +36,8 @@ def calc_good_arrays(phase_list,
     phaseToDist = {}
     for phase in phase_list:
         # Distance range of phase, from TauP
-        dist = phase_dist_range(phase,sourcedepth=0,model='prem')
-        #dist = (60, 185)
+        #dist = phase_dist_range(phase,sourcedepth=0,model='prem')
+        dist = (60, 185)
         print(dist)
         if dist is None:
             print(f"Cannot determine phase distance range for {phase}")

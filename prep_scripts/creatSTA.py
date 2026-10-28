@@ -1,4 +1,4 @@
-#create sta list for heatmap. out put is sta_info.txt
+#create sta list for spam. out put is sta_info.txt
 import obspy
 from obspy.clients.fdsn import Client
 from obspy.core.utcdatetime import UTCDateTime

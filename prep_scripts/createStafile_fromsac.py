@@ -1,4 +1,4 @@
-#create sta file for heatmap if sac files already exist. must run script in directory of sac files. output is sta_info.txt
+#create sta file for spam if sac files already exist. must run script in directory of sac files. output is sta_info.txt
 import obspy
 from obspy.clients.fdsn import Client
 from obspy.clients.fdsn import RoutingClient
@@ -36,4 +36,4 @@ for sacfile in st:
     text=(f'{netwrk[:2]} {stanm} {location} {stala} {stalo} {stael} {stadp} {start} {end}\n')
     file.writelines(text)
     file.close()
-print('Run create_evt.py if you dont have event list. If you have event list you are ready to heatmap')
+print('Run create_evt.py if you dont have event list. If you have event list you are ready to spam')

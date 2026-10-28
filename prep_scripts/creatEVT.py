@@ -1,4 +1,4 @@
-#Creates an eq catalog given in the format needed for heatmap. output is file evt_info.txt
+#Creates an eq catalog given in the format needed for spam. output is file evt_info.txt
 import obspy
 from obspy.clients.fdsn import Client
 from obspy.core.utcdatetime import UTCDateTime

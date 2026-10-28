@@ -29,6 +29,7 @@ def calcBasestation(array):
         if dist_sta_cent< closest_dist:
             closest_dist=dist.delta
             array.basestation=sta
+    return
 
 def is_array_gp_okay(arr,spacing):
     x=0
@@ -86,7 +87,8 @@ class ArrayToEqlist:
             "array":self.array.to_json(),
             "eqlists":[eq.to_json() for eq in self.eqlists],
             "eqcount":self.eqcount,
-            "good_sta_list":[sta.to_json() for sta in self.good_sta_list]
+            "good_sta_list":[sta.to_json() for sta in self.good_sta_list],
+            "basestation":self.basestation.to_json()
             }
     @classmethod
     def from_json(cls,jsonObj):
@@ -95,6 +97,7 @@ class ArrayToEqlist:
         obj.eqcount=jsonObj["eqcount"]
         obj.eqlists=[EQ.from_json(eq) for eq in jsonObj["eqlists"]]
         obj.good_sta_list=[Station.from_json(sta) for sta in jsonObj["good_sta_list"]]
+        obj.basestation=Station.from_json(jsonObj['basestation'])
         return obj
     def check_eq(self,evt,distRange,minSta):
         "checks if any events are within range from array, if so count 1 for that array and add event to eqlist"

@@ -45,7 +45,7 @@ def grab_sacfiles(checked_list,evt_name):
 
 
 def parseArgs():
-    parser = argparse.ArgumentParser(description='creates dir, cp files, runs heatmap, and prepares for looper')
+    parser = argparse.ArgumentParser(description='creates dir, cp files, runs spam, and prepares for looper')
     parser.add_argument('-e', '--evtlist', help="list of events", required=True)
     return parser.parse_args()
 

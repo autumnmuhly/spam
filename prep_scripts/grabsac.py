@@ -10,7 +10,7 @@ import sys
 from displacement_velocity import displacement_velocity
 import argparse
 import subprocess
-from heatmap import Station,Location
+from spam import Station,Location
 
 class SacStream:
     def __init__(self, stanm,network,channel,lat,lon,start,stop):
@@ -20,7 +20,7 @@ class SacStream:
         self.channel=channel
 
 def parseArgs():
-    parser = argparse.ArgumentParser(description='creates dir, cp files, runs heatmap, and prepares for looper')
+    parser = argparse.ArgumentParser(description='creates dir, cp files, runs spam, and prepares for looper')
     parser.add_argument('-c', '--channel', help="component, R T or Z default is R", default='R' )
     parser.add_argument('-e', '--eventname', help="eventname", required=True )
     return parser.parse_args()
