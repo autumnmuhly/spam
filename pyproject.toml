@@ -22,8 +22,10 @@ classifiers = [
 dependencies = [
     "numpy",
     "matplotlib",
-    "jsonpickle",
-    "cartopy"
+    "json",
+    "cartopy",
+    "obspy",
+    "scipy"
 ]
 
 [project.urls]

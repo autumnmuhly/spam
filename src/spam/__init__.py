@@ -1,4 +1,4 @@
-__version__="0.0.1"
+__version__="0.0.2"
 
 from .mesh_create import find_neighbors,fibonacci_sphere,create_gridpoint
 from .mesh_setup import latlon_cartesian,cart_latlon, radius_per_gridpoint
@@ -12,7 +12,6 @@ from .read_datafiles import (
 from .taup import (
    phase_dist_range, taup_time, taup_phase
    )
-
 from .spamsummary import summary
 from .spam_plot import plot
 from .vespa_prepare import prepare_vespa
