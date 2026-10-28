@@ -48,8 +48,8 @@ If you don't have an event list an example for creating one is given in prep_scr
 grid spacing:
 we use the fibanocci lattice for evenly (as much as possible) spaced grid points. for a chart on number of points and grid spacing please refer to the resources folder. would also like to add a photo of this information here but i dont know how to do that yet so please just look at the grid spacing folder
 
-
 | No. of Points | Degree Spacing |
+|:---|:---|
 |   1000 | 3.623703272 |
 |   1500 | 2.958741331 |
 |   2000 | 2.562345156 |
