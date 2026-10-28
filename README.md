@@ -44,10 +44,33 @@ If you don't have an event list an example for creating one is given in prep_scr
 -----------------------
 ## Some Notes 
 
+
 grid spacing:
 we use the fibanocci lattice for evenly (as much as possible) spaced grid points. for a chart on number of points and grid spacing please refer to the resources folder. would also like to add a photo of this information here but i dont know how to do that yet so please just look at the grid spacing folder
 
-![Alternative text description](https://docs.google.com/spreadsheets/d/1L8ZEgqk5x04UYh0sdvvXhDXUW7Le6ydTE4CCJE7OVMw/edit?gid=0#gid=0)
+
+| No. of Points | Degree Spacing |
+|   1000 | 3.623703272 |
+|   1500 | 2.958741331 |
+|   2000 | 2.562345156 |
+|   2500 | 2.291831181 |
+|   3000 | 2.092146059 |
+|   3500 | 1.936950873 |
+|   4000 | 1.811851636 |
+|   4500 | 1.708230104 |
+|   5000 | 1.620569369 |
+|   5500 | 1.545152267 |
+|   6000 | 1.479370666 |
+|   6500 | 1.421333361 |
+|   8000 | 1.28117 |
+|   9000 | 1.2079 |
+|   20000 | 0.81028 |
+|   30000 | 0.66159467 |
+|   40000 | 0.572957795 |
+|   50000 | 0.512469 |
+|   60000| 0.467818 |
+
+
 
 array configriation, array radius:
 1 degree at the poles looks different than 1 degree at the equator. it is recommend that the array radius is 2-2.5 times the grid spacing to ensure proper sampling. this will also ensure that the grid point used to form the array is the best possible grid point in the suite to represent the array. we are currently working on improving array configuartion and deleting duplicates by looking at sapital distribution and density of stations in an array.
