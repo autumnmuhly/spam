@@ -2,7 +2,7 @@ __version__="0.0.2"
 
 from .mesh_create import find_neighbors,fibonacci_sphere,create_gridpoint
 from .mesh_setup import latlon_cartesian,cart_latlon, radius_per_gridpoint
-from .gridpoint import Gridpoint,Station,EQ,Location
+from .gridpoint import Gridpoint,Station,EQ,Location,custom_json
 from .array import Array,form_all_array,ArrayToEqlist,EqtoArrayList,EqGridAssignment,form_eq,items_in_dist,calcBasestation
 from .distaz import DistAz
 from .read_datafiles import (
@@ -49,5 +49,6 @@ __all__=[
     "calcArthCenter",
     "Center",
     "calcBasestation",
-    "calcGeomedian"
+    "calcGeomedian",
+    "custom_json"
 ]

@@ -1,21 +1,14 @@
 import argparse
-import jsonpickle
 from multiprocessing import Pool
 import functools
 import os
 from datetime import datetime
-from .mesh_create import find_neighbors,fibonacci_sphere,create_gridpoint
-from .mesh_setup import latlon_cartesian,cart_latlon, radius_per_gridpoint
-from .gridpoint import Gridpoint,Station,EQ,Location,MetaData
-from .array import Array,form_all_array,ArrayToEqlist,EqtoArrayList,EqGridAssignment,form_eq,items_in_dist,is_array_gp_okay,calcBasestation
-from .distaz import DistAz
-from .read_datafiles import (
-    read_stations_adept, read_earthquakes_adept,
-    load_arrays_json, save_arrays_json
-    )
-from .taup import (
-   phase_dist_range, taup_time, taup_phase
-   )
+from .mesh_create import create_gridpoint
+from .mesh_setup import radius_per_gridpoint
+from .gridpoint import MetaData,custom_json
+from .array import (form_all_array,ArrayToEqlist,is_array_gp_okay,calcBasestation)
+from .read_datafiles import (read_stations_adept, read_earthquakes_adept)
+from .taup import (phase_dist_range)
 from .arrConfig import calcArthCenter
 import json
 
@@ -175,7 +168,7 @@ def run_calc(args):
         "meta_data":metaData.to_json()
         }
     with open(args.outfile, "w") as outf:
-        json.dump(mydata, outf, indent=4)
+        json.dump(mydata, outf,default=custom_json, indent=4)
     return 0
 
 

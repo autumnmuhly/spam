@@ -1,5 +1,6 @@
 from .mesh_setup import latlon_cartesian,cart_latlon
 from .distaz import DistAz
+from datetime import datetime
 
 class Location:
     def __init__(self,lat,lon,cart=None):
@@ -47,6 +48,11 @@ class Gridpoint:
     def __str__(self):
         return f"gp {self.loc}"
 
+def custom_json(obj):
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError(f'Cannot serialize object of {type(obj)}')
+
 class Station:
     def __init__(self,netwrk,name,loc,start,stop,locCode):
         "station takes a location, start time, and end time"
@@ -65,8 +71,8 @@ class Station:
                 "lat":self.loc.lat,
                 "lon":self.loc.lon
                 },
-            "start":self.start.isoformat(),
-            "stop":self.stop.isoformat()
+            "start":self.start,
+            "stop":self.stop
                 }
     @classmethod
     def from_json(cls,jsonObj):
@@ -74,8 +80,8 @@ class Station:
         netwrk=jsonObj['netwrk']
         name=jsonObj['name']
         loc=Location(jsonObj["loc"]["lat"],lon=jsonObj["loc"]["lon"])
-        start=jsonObj['start']
-        stop=jsonObj['stop']
+        start=datetime.fromisoformat(jsonObj['start'])
+        stop=datetime.fromisoformat(jsonObj['stop'])
         return cls(netwrk,name,loc,start,stop,locCode)
     def __str__(self):
         return f"{self.netwrk}_{self.name} {self.loc}"
@@ -92,13 +98,13 @@ class EQ:
                 "lat":self.loc.lat,
                 "lon":self.loc.lon
                 },
-            "time":self.time.isoformat(),
+            "time":self.time,
             "depth":self.depth
             }
     @classmethod
     def from_json(cls,jsonObj):
         depth=jsonObj['depth']
-        event_time=jsonObj['time']
+        event_time=datetime.fromisoformat(jsonObj['time'])
         loc=Location(jsonObj["loc"]["lat"],lon=jsonObj["loc"]["lon"])
         return cls(loc,depth,event_time)
     def __str__(self):
