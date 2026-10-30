@@ -18,7 +18,16 @@ def formatEQList(eventfile):
         for line in infile:
             item=line.split()
             if len(item)>1:
-                ID=datetime.strptime(line.strip(), "%Y-%m-%d %H:%M:%S").strftime('%Y-%m-%d %H:%M')
+                print(line)
+                line=line.strip()
+                # ID=datetime.strptime(line.strip(), "%Y-%m-%d %H:%M").strftime('%Y-%m-%d %H:%M')
+                ID=datetime.strptime(line, "%Y-%m-%d %H:%M:%S")
+                ID=ID.strftime('%Y%m%d%H%M')
+                # print(ID)
+                # print('-----')
+                # yearmon=ID.strftime('%Y%m%d')
+                # dhour=ID.strftime('%H:%M')
+                # ID=str(yearmon)+str(dhour)
                 event_list.append(ID)
             if len(item)==1:
                 print('correctly formated already:)')
@@ -37,7 +46,7 @@ def run_spam(event_ID):
         try:
             os.mkdir(evt)
             os.chdir(evt)
-            subprocess.run(['cp', '/home/amuhly/SmKS/majorarc/All.stations', '.'])
+            subprocess.run(['cp', '/home/amuhly/SmKS/majorarc/info_new/All.stations', '.'])
             subprocess.run(['cp', f'/usc/data/ADEPT/Info/{evt}.event', '.'])
             # For yellowstone
             #os.system(f'spamcalc -s All.stations -e {evt}.event --minsta 20 --grid 40000 --arrayradius 1.4 -p SKS,SKKKKS --region -98 -83 33 41')
