@@ -44,14 +44,14 @@ def run_spam(event_ID):
     for evt in event_ID:
         print(evt)
         try:
-            os.mkdir(evt)
+            # os.mkdir(evt)
             os.chdir(evt)
-            subprocess.run(['cp', '/home/amuhly/SmKS/majorarc/info_new/All.stations', '.'])
+            # subprocess.run(['cp', '/home/amuhly/SmKS/majorarc/info_new/All.stations', '.'])
             subprocess.run(['cp', f'/usc/data/ADEPT/Info/{evt}.event', '.'])
             # For yellowstone
             #os.system(f'spamcalc -s All.stations -e {evt}.event --minsta 20 --grid 40000 --arrayradius 1.4 -p SKS,SKKKKS --region -98 -83 33 41')
-            os.system(f'spamcalc -s All.stations -e {evt}.event --minsta 20 --grid 40000 --arrayradius 1.0 -p SKKKKS')
-            os.system(f'prepvespa')
+            # os.system(f'spamcalc -s All.stations -e {evt}.event --minsta 20 --grid 40000 --arrayradius 1.0 -p SKKKKS')
+            # os.system(f'prepvespa')
             os.system(f'python3 /home/amuhly/spam/prep_scripts/grabsac.py -e {evt}')
             os.system("mv new_sta_list station_list_total")
             displacement_velocity(evt)

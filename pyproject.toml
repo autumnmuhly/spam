@@ -22,7 +22,6 @@ classifiers = [
 dependencies = [
     "numpy",
     "matplotlib",
-    "json",
     "cartopy",
     "obspy",
     "scipy"

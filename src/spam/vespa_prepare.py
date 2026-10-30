@@ -39,7 +39,7 @@ def prepare_vespa():
             #create station list
             for sta in arr.good_sta_list:
                 sta_list_total.append(sta)
-                text=(f'{sta.netwrk} {sta.name} {0.0} {sta.loc.lat} {sta.loc.lon} {0.0} {0.0} {sta.start} {sta.stop}\n')
+                text=(f'{sta.netwrk} {sta.name} {sta.locCode} {sta.loc.lat} {sta.loc.lon} {0.0} {0.0} {sta.start} {sta.stop}\n')
                 file3.writelines(text)
     os.system("awk '!seen[$0]++' station_list_total > temp")
     os.system("mv temp station_list_total")

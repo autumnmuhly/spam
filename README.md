@@ -1,4 +1,4 @@
-# Seismic Phase Array Match Maker 
+# Seismic Phase Array Matchmaker
 
 SPAM creates heat maps for where on earth is the best place to go 'hunting' for seismic phases. In addition, it can act as an array former. 
 
@@ -7,7 +7,7 @@ SPAM creates heat maps for where on earth is the best place to go 'hunting' for 
 cd spam
 python -m venv .venv
 source .venv/bin/activate
-python pip install -v -e .
+python pip install -e .
 ```
 
 

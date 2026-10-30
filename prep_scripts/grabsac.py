@@ -11,6 +11,8 @@ from displacement_velocity import displacement_velocity
 import argparse
 import subprocess
 from spam import Station,Location
+import glob
+import shutil
 
 class SacStream:
     def __init__(self, stanm,network,channel,lat,lon,start,stop):
@@ -39,7 +41,7 @@ def readStaFile(stafile):
             loc=Location(items[3],items[4])
             start=f'{items[7]}{items[8]}'
             stop=f'{items[9]}{items[10]}'
-            sta_list.append(Station(items[1],items[0],loc,start,stop))
+            sta_list.append(Station(items[1],items[0],loc,start,stop,items[2]))
     return sta_list
 
 def check_grabsacfile(station,evt_name):
@@ -51,28 +53,59 @@ def check_grabsacfile(station,evt_name):
     wd_adept=(f"/usc/data/ADEPT/{evt_name}")
     channel='R'
     stream=[]
-    try:
-        os.chdir(wd_adept)
-        stream=obspy.read(f'*.{station.name}.{station.netwrk}*{channel}.D.sac',debug_headers=True) #ending of .sac file is adept specific
-    except:
-         print(f'having trouble reading in {station.name}.{station.netwrk}')
-    if len(stream) != 0:
-        for st in stream:
-            start=st.stats.starttime
-            newtrace=st.trim(start+1600,start+2400)
-            #print(newtrace.stats.npts)
-            if newtrace.stats.npts ==0:
-                print(f'{station.name}.{station.netwrk} is empty')
-                break
-            max=newtrace.max()
-            if min == 0 or min == "nan" or max == 0 or max == "nan":
-                print(f'{station.name} needs to be deleted')
-                break
-            else:
-                with open(f'{wd}/new_sta_list','a') as file1:
-                        text=(f'{station.netwrk} {station.name} {0.0} {station.loc.lat} {station.loc.lon} {0.0} {0.0} {station.start} {sta.stop}\n')
-                        os.system(f"cp /usc/data/ADEPT/{evt_name}/{evt_name}.{station.name}.{station.netwrk}*R.D.sac {wd}")
-                        file1.writelines(text)
+    print('--------')
+    print(wd)
+    name=f'/usc/data/ADEPT/{evt_name}/{evt_name}.{station.name}.{station.netwrk}*{channel}.D.sac'
+    files=glob.glob(name)
+    for file in files:
+        shutil.copy2(file,'.')
+    stream=obspy.read(f'*.{station.name}.{station.netwrk}*{channel}.D.sac',debug_headers=True)
+    for st in stream:
+        start=st.stats.starttime
+        newtrace=st.trim(start+1600,start+2400)
+        needsDelete=False
+        if newtrace.stats.npts ==0:
+            print(f'{station.name}.{station.netwrk} is empty')
+            needsDelete=True
+            break
+        max=newtrace.max()
+        if min == 0 or min == "nan" or max == 0 or max == "nan":
+            print(f'{station.name} needs to be deleted')
+            needsDelete=True
+            break
+        if needsDelete == False:
+            with open(f'{wd}/new_sta_list','a') as file1:
+                    text=(f'{station.netwrk} {station.name} {0.0} {station.loc.lat} {station.loc.lon} {0.0} {0.0} {station.start} {sta.stop}\n')
+                    os.system(f"cp /usc/data/ADEPT/{evt_name}/{evt_name}.{station.name}.{station.netwrk}*R.D.sac {wd}")
+                    file1.writelines(text)
+        else:
+            subprocess.run(['rm', '-rf', f'*.{station.name}.{station.netwrk}*{channel}.D.sac'])
+
+    # try:
+    #     os.chdir(wd_adept)
+    #     workingDir=os.getcwd()
+    #     print(workingDir)
+    #     print(f'*.{station.name}.{station.netwrk}*{channel}.D.sac')
+    #     stream=obspy.read(f'*.{station.name}.{station.netwrk}*{channel}.D.sac',debug_headers=True) #ending of .sac file is adept specific
+    # except:
+    #      print(f'having trouble reading in {station.name}.{station.netwrk}')
+    # if len(stream) != 0:
+    #     for st in stream:
+    #         start=st.stats.starttime
+    #         newtrace=st.trim(start+1600,start+2400)
+    #         #print(newtrace.stats.npts)
+    #         if newtrace.stats.npts ==0:
+    #             print(f'{station.name}.{station.netwrk} is empty')
+    #             break
+    #         max=newtrace.max()
+    #         if min == 0 or min == "nan" or max == 0 or max == "nan":
+    #             print(f'{station.name} needs to be deleted')
+    #             break
+    #         else:
+    #             with open(f'{wd}/new_sta_list','a') as file1:
+    #                     text=(f'{station.netwrk} {station.name} {0.0} {station.loc.lat} {station.loc.lon} {0.0} {0.0} {station.start} {sta.stop}\n')
+    #                     os.system(f"cp /usc/data/ADEPT/{evt_name}/{evt_name}.{station.name}.{station.netwrk}*R.D.sac {wd}")
+    #                     file1.writelines(text)
     os.chdir(wd)
     return
 
